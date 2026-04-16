@@ -81,7 +81,7 @@ class AromaProfile {
 
 
   static const List<String> axisLabels = [
-    'Blumig', 'Fruchtig', 'Grasig', 'Würzig', 'Holzig/Erdig', 'Geröstet/Süß', 'Kräuterartig',
+    'Blumig', 'Fruchtig', 'Grasig', 'Würzig', 'Erdig', 'Geröstet', 'Kräuter',
   ];
 
 

@@ -53,6 +53,11 @@ class TeaProvider extends ChangeNotifier {
     return result;
   }
 
+  Tea? get lastUsedTea => _teas.isNotEmpty ? _teas.first : null;
+
+  Tea? getById(String id) =>
+      _teas.where((t) => t.id == id).firstOrNull;
+ 
   // Laden
 
   Future<void> loadAll() async {

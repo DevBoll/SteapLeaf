@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:steapleaf/features/collection/tea_detail_screen.dart';
 import '../../domain/enums/enums.dart';
 import '../../domain/models/tea.dart';
 import 'tea_provider.dart';
@@ -86,45 +87,38 @@ class _CollectionScreenState extends State<CollectionScreen> {
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Suche
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
-            child: Semantics(
-              label: 'Tee suchen',
-              child: TextField(
-                controller: _searchCtrl,
-                decoration: const InputDecoration(
-                  hintText: 'Tee suchen …',
-                  prefixIcon: Icon(Icons.search, size: 20),
-                ),
-                onChanged: context.read<TeaProvider>().setSearch,
-              ),
-            ),
-          ),
-
-          // Filter-Chips
-          _FilterRow(provider: provider),
-          const SizedBox(height: 6),
-
-          // Sort + Schnellfilter
-          _SortRow(
-            provider: provider,
-            sortLabel: _sortLabel,
-            onCycleSort: _cycleSort,
-          ),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+                      child: Semantics(
+                        label: 'Tee suchen',
+                        child: TextField(
+                          controller: _searchCtrl,
+                          decoration: const InputDecoration(
+                            hintText: 'Tee suchen …',
+                            prefixIcon: Icon(Icons.search, size: 20),
+                          ),
+                          onChanged: context.read<TeaProvider>().setSearch,
+                        ),
+                      ),
+                    ),
+                    _SortRow(
+                      provider: provider,
+                      sortLabel: _sortLabel,
+                      onCycleSort: _cycleSort,
+                    ),
 
           // Tee-Liste
-          Expanded(
+                    Expanded(
             child: provider.loading
                 ? const Center(child: CircularProgressIndicator())
                 : sortedTeas.isEmpty
                     ? _EmptyState(
                         isEmpty: provider.teas.isEmpty,
                         onAdd: () => _openEdit(context),
-                      )
+                )
                     : ListView.separated(
-                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 100),
+                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 100),
                         itemCount: sortedTeas.length,
                         separatorBuilder: (_, _) => Divider(
                           height: 1,
@@ -133,9 +127,9 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         ),
                         itemBuilder: (_, i) => _TeaRow(sortedTeas[i]),
                       ),
-          ),
-        ],
-      ),
+                    ),
+                  ],
+                ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Tee hinzufügen',
         onPressed: () => _openEdit(context),
@@ -157,56 +151,78 @@ class _CollectionScreenState extends State<CollectionScreen> {
   }
 }
 
-// Filter-Chips
+// Sorte-Dropdown
 
-class _FilterRow extends StatelessWidget {
+class _TypeFilterDropdown extends StatelessWidget {
   final TeaProvider provider;
-  const _FilterRow({required this.provider});
-
-  bool get _noFilter =>
-      provider.filterType == null &&
-      !provider.filterFavorites &&
-      provider.filterInStock == null;
-
-  int _countFor(TeaType t) =>
-      provider.teas.where((tea) => tea.type == t).length;
+  const _TypeFilterDropdown({required this.provider});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme   = Theme.of(context).textTheme;
+    final selected    = provider.filterType;
+    final isActive    = selected != null;
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 6,
-        children: [
-          FilterChip(
-            label: Text('Alle ${provider.teas.length}'),
-            selected: _noFilter,
-            showCheckmark: false,
-            onSelected: (_) => provider.clearFilters(),
+    final availableTypes = TeaType.values
+        .where((t) => provider.teas.any((tea) => tea.type == t))
+        .toList();
+
+    return PopupMenuButton<TeaType?>(
+      initialValue: selected,
+      onSelected: (type) => provider.setFilterType(
+        provider.filterType == type ? null : type,
+      ),
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          value: null,
+          onTap: () => provider.setFilterType(null),
+          child: Text(
+            'Alle Sorten',
+            style: textTheme.bodySmall?.copyWith(
+              color: selected == null
+                  ? colorScheme.primary
+                  : colorScheme.onSurface,
+            ),
           ),
-          ...TeaType.values.map((t) {
-            final count = _countFor(t);
-            if (count == 0) return const SizedBox.shrink();
-            final isSelected = provider.filterType == t;
-            return FilterChip(
-              label: Text('${t.label} $count'),
-              selected: isSelected,
-              showCheckmark: false,
-              selectedColor: t.color.withValues(alpha: 0.2),
-              side: BorderSide(
-                color: isSelected ? t.color : colorScheme.outlineVariant,
-                width: isSelected ? 1.0 : 0.5,
+        ),
+        ...availableTypes.map((t) => PopupMenuItem(
+              value: t,
+              child: Text(
+                t.label,
+                style: textTheme.bodySmall?.copyWith(
+                  color: selected == t ? t.color : colorScheme.onSurface,
+                ),
               ),
-              onSelected: (_) => provider.setFilterType(
-                provider.filterType == t ? null : t,
+            )),
+      ],
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: isActive
+              ? selected.color.withValues(alpha: 0.15)
+              : colorScheme.surfaceContainerHigh,
+          border: Border.all(
+            color: isActive ? selected.color : colorScheme.outlineVariant,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              isActive ? selected.label : 'Sorte',
+              style: textTheme.labelMedium?.copyWith(
+                color: isActive ? selected.color : colorScheme.onSurface,
               ),
-            );
-          }),
-        ],
+            ),
+            const SizedBox(width: 2),
+            Icon(
+              Icons.arrow_drop_down,
+              size: 16,
+              color: isActive ? selected.color : colorScheme.onSurfaceVariant,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -232,7 +248,7 @@ class _SortRow extends StatelessWidget {
     final favActive = provider.filterFavorites;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
       child: Row(
         children: [
           TextButton.icon(
@@ -245,6 +261,8 @@ class _SortRow extends StatelessWidget {
             ),
           ),
           const Spacer(),
+          _TypeFilterDropdown(provider: provider),
+          const SizedBox(width: 4),
           FilterChip(
             label: const Text('♥ Favoriten'),
             selected: favActive,
@@ -279,7 +297,7 @@ class _TeaRow extends StatelessWidget {
     return InkWell(
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => TeaEditScreen(tea: tea)),
+        MaterialPageRoute(builder: (_) => TeaDetailScreen(tea: tea, teaId: tea.id,)),
       ),
       child: Opacity(
         opacity: tea.inStock ? 1.0 : 0.55,
