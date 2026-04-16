@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../domain/enums/enums.dart';
 import '../../domain/models/tea.dart';
-import '../../providers/tea_provider.dart';
+import 'tea_provider.dart';
 import '../../theme/steapleaf_theme.dart';
+import 'tea_edit_screen.dart';
 import '../../shared/widgets/tea_thumb.dart';
 import '../../shared/widgets/tea_type_chip.dart';
 import '../../shared/widgets/star_rating.dart';
@@ -148,8 +149,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
     );
   }
 
-  void _openEdit(BuildContext context) {
-    // TODO: Tea-Edit-Screen öffnen
+  void _openEdit(BuildContext context, {Tea? tea}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => TeaEditScreen(tea: tea)),
+    );
   }
 }
 
@@ -171,11 +175,12 @@ class _FilterRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Padding(
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Wrap(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         spacing: 6,
-        runSpacing: 6,
         children: [
           FilterChip(
             label: Text('Alle ${provider.teas.length}'),
@@ -272,9 +277,10 @@ class _TeaRow extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return InkWell(
-      onTap: () {
-        // TODO: Tea-Detail-Screen öffnen
-      },
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => TeaEditScreen(tea: tea)),
+      ),
       child: Opacity(
         opacity: tea.inStock ? 1.0 : 0.55,
         child: Padding(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'data/repositories/sqlite_tea_repository.dart';
-import 'providers/tea_provider.dart';
+import 'features/collection/tea_provider.dart';
 import 'theme/steapleaf_theme.dart';
 import 'shell/main_shell.dart';
 
