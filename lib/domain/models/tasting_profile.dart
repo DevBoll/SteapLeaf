@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 abstract final class TastingTags {
   static const List<String> texture = ['seidig', 'ölig', 'cremig', 'wässrig'];
 }

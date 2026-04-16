@@ -26,11 +26,6 @@ class _MainShellState extends State<MainShell> {
   // TODO: Platzhalter – wird später durch den Session-Provider ersetzt.
   bool _sessionActive = false;
 
-  static const List<Widget> _screens = [
-    HomeScreen(),
-    CollectionScreen(),
-    JournalScreen(),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +36,11 @@ class _MainShellState extends State<MainShell> {
         children: [
           IndexedStack(
             index: _activeTab.index,
-            children: _screens,
+            children: const [
+              HomeScreen(),
+              CollectionScreen(),
+              JournalScreen(),
+            ],
           ),
           if (_sessionActive)
             Align(

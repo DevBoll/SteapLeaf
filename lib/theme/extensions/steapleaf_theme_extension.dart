@@ -149,6 +149,7 @@ class SteapLeafThemeExtension extends ThemeExtension<SteapLeafThemeExtension> {
     TeaTypeColors? teaTypeHerbal,
     TeaTypeColors? teaTypeFruit,
     TeaTypeColors? teaTypeRooibos,
+    TeaTypeColors? teaTypeYellow,
     TeaTypeColors? teaTypeCustom,
   }) {
     return SteapLeafThemeExtension(
