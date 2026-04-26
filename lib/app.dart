@@ -22,6 +22,7 @@ import 'core/providers/tag_provider.dart';
 import 'core/providers/tea_provider.dart';
 
 import 'package:steapleaf/theme/steapleaf_theme.dart';
+import 'main_shell.dart';
 
 class SteapLeafApp extends StatelessWidget {
   const SteapLeafApp({super.key, required this.db});
@@ -63,7 +64,7 @@ class SteapLeafApp extends StatelessWidget {
         theme: SteapLeafTheme.light,
         darkTheme: SteapLeafTheme.dark,
         themeMode: ThemeMode.system,
-        home: const Scaffold(),
+        home: const MainShell(),
       ),
     );
   }
