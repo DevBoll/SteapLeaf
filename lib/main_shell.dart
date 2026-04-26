@@ -4,6 +4,7 @@ import 'core/providers/session_provider.dart';
 import 'core/providers/settings_provider.dart';
 import 'core/providers/tag_provider.dart';
 import 'core/providers/tea_provider.dart';
+import 'screens/collection/collection_screen.dart';
 import 'theme/steapleaf_theme.dart';
 
 
@@ -186,8 +187,7 @@ class _HomeTab extends StatelessWidget {
 class _CollectionTab extends StatelessWidget {
   const _CollectionTab();
   @override
-  Widget build(BuildContext context) =>
-      const _TabPlaceholder(SteapLeafKanji.collection);
+  Widget build(BuildContext context) => const CollectionScreen();
 }
 
 

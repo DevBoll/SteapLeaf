@@ -94,4 +94,10 @@ abstract final class TeaTypeTokens {
   badge:       Color(0xFF7A6010),
 );
 
+static const TeaTypeColors other = TeaTypeColors(
+    container:   Color.fromARGB(255, 255, 0, 221),
+    onContainer: Color.fromARGB(255, 255, 170, 0),
+    badge:       Color.fromARGB(255, 0, 225, 255),
+  );
+
 }

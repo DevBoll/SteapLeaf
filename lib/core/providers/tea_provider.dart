@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
 
 import '../models/brewing_variant.dart';
+import '../models/enums.dart';
 import '../models/tea.dart';
 import '../repositories/tea_repository.dart';
+
+enum TeaSortOrder { byName, byRating, byNewest }
 
 /// State-Management für die Tee-Sammlung.
 class TeaProvider extends ChangeNotifier {
@@ -12,10 +15,101 @@ class TeaProvider extends ChangeNotifier {
   List<Tea> _teas = [];
   bool _loading = false;
   String? _error;
+  TeaSortOrder _sortOrder = TeaSortOrder.byName;
+  String _searchQuery = '';
+  TeaType? _filterType;
+  bool _filterFavorites = false;
+  bool? _filterInStock;
 
-  List<Tea> get teas => List.unmodifiable(_teas);
+  TeaSortOrder get sortOrder => _sortOrder;
   bool get loading => _loading;
   String? get error => _error;
+  String get searchQuery => _searchQuery;
+  TeaType? get filterType => _filterType;
+  bool get filterFavorites => _filterFavorites;
+  bool? get filterInStock => _filterInStock;
+
+  List<Tea> get teas {
+    final query = _searchQuery.toLowerCase().trim();
+    var filtered = query.isEmpty
+        ? _teas
+        : _teas.where((t) {
+            return t.name.toLowerCase().contains(query) ||
+                t.origin.toLowerCase().contains(query) ||
+                t.vendor.toLowerCase().contains(query) ||
+                t.tags.any((tag) => tag.name.toLowerCase().contains(query));
+          }).toList();
+
+
+     if (_filterType != null) {
+      filtered = filtered.where((t) => t.type == _filterType).toList();
+    }
+
+    if (_filterFavorites) {
+      filtered = filtered.where((t) => t.isFavorite).toList();
+    }
+
+    if (_filterInStock != null) {
+      filtered = filtered.where((t) => t.isOwned == _filterInStock).toList();
+    }
+
+    final sorted = [...filtered];
+    switch (_sortOrder) {
+      case TeaSortOrder.byName:
+        sorted.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      case TeaSortOrder.byRating:
+        sorted.sort((a, b) => b.rating.compareTo(a.rating));
+      case TeaSortOrder.byNewest:
+        sorted.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    }
+    return List.unmodifiable(sorted);
+  }
+
+  void setSortOrder(TeaSortOrder order) {
+    if (_sortOrder == order) return;
+    _sortOrder = order;
+    notifyListeners();
+  }
+
+  void setSearch(String query) {
+    if (_searchQuery == query) return;
+    _searchQuery = query;
+    notifyListeners();
+  }
+
+  void clearSearch() {
+    if (_searchQuery.isEmpty) return;
+    _searchQuery = '';
+    notifyListeners();
+  }
+
+ void setFilterType(TeaType? type) {
+  if (_filterType == type) return;
+    _filterType = type;
+    notifyListeners();
+  }
+
+  void setFilterFavorites(bool value) {
+     if (_filterFavorites == value) return;
+    _filterFavorites = value;
+    notifyListeners();
+  }
+
+  void setFilterInStock(bool? value) {
+     if (_filterInStock == value) return;
+    _filterInStock = value;
+    notifyListeners();
+  }
+
+  void clearFilters() {
+    _filterType = null;
+    _filterFavorites = false;
+    _filterInStock = false;
+    _searchQuery = '';
+    notifyListeners();
+  }
+
+
 
   List<Tea> get favorites =>
       _teas.where((t) => t.isFavorite).toList(growable: false);
@@ -29,7 +123,7 @@ class TeaProvider extends ChangeNotifier {
     return null;
   }
 
-  // ---------------- Load ----------------
+  // Load
 
   Future<void> loadAll() async {
     _setLoading(true);
@@ -58,7 +152,7 @@ class TeaProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ---------------- Mutations ----------------
+  // Mutations
 
   Future<Tea> create(Tea tea) async {
     final created = await _repo.create(tea);
@@ -78,22 +172,7 @@ class TeaProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavorite(String id) async {
-    await _repo.toggleFavorite(id);
-    await refresh(id);
-  }
-
-  Future<void> setOwned(String id, bool owned) async {
-    await _repo.setOwned(id, owned);
-    await refresh(id);
-  }
-
-  Future<void> setRating(String id, int rating) async {
-    await _repo.setRating(id, rating);
-    await refresh(id);
-  }
-
-  // ---------------- Brewing-Variants ----------------
+  // Brewing-Variants
 
   Future<void> addVariant(BrewingVariant v) async {
     await _repo.addVariant(v);
@@ -115,10 +194,11 @@ class TeaProvider extends ChangeNotifier {
     await refresh(teaId);
   }
 
-  // ---------------- Helpers ----------------
+  // Helpers 
 
   void _setLoading(bool v) {
     _loading = v;
     notifyListeners();
   }
+ 
 }
