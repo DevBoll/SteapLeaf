@@ -7,6 +7,14 @@ import '../repositories/tea_repository.dart';
 
 enum TeaSortOrder { byName, byRating, byNewest }
 
+extension TeaSortOrderX on TeaSortOrder {
+  String get label => switch (this) {
+        TeaSortOrder.byName    => 'Name',
+        TeaSortOrder.byRating  => 'Bewertung',
+        TeaSortOrder.byNewest  => 'Zuletzt erstellt',
+      };
+}
+
 /// State-Management für die Tee-Sammlung.
 class TeaProvider extends ChangeNotifier {
   final TeaRepository _repo;

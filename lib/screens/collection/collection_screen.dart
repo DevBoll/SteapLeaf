@@ -21,7 +21,16 @@ class CollectionScreen extends StatefulWidget {
 class _CollectionScreenState extends State<CollectionScreen> {
 final _searchCtrl = TextEditingController();
 
-   void _openEdit(BuildContext context, {Tea? tea}) {
+  String get _sortLabel => context.read<TeaProvider>().sortOrder.label;
+
+  void _cycleSort() {
+    final provider = context.read<TeaProvider>();
+    final values = TeaSortOrder.values;
+    final next = values[(provider.sortOrder.index + 1) % values.length];
+    provider.setSortOrder(next);
+  }
+
+  void _openEdit(BuildContext context, {Tea? tea}) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => TeaEditScreen(tea: tea)),
@@ -85,6 +94,11 @@ final _searchCtrl = TextEditingController();
                         ),
                       ),
                     ),
+                    _SortRow(
+                      provider: provider,
+                      sortLabel: _sortLabel,
+                      onCycleSort: _cycleSort,
+                    ),
 
           // Tee-Liste
                     Expanded(
@@ -108,22 +122,138 @@ final _searchCtrl = TextEditingController();
                     ),
                   ],
                 ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'collection_fab',
-        tooltip: 'Tee hinzufügen',
-        onPressed: () => _openEdit(context),
-        child: Text(
-          SteapLeafKanji.newItem.character,
-          style: textTheme.titleLarge?.copyWith(
-            color: colorScheme.onPrimary,
-          ),
-        ),
-      ),
     );      
   }
-  
   }
+
+class _SortRow extends StatelessWidget {
+  final TeaProvider provider;
+  final String sortLabel;
+  final VoidCallback onCycleSort;
+
+  const _SortRow({
+    required this.provider,
+    required this.sortLabel,
+    required this.onCycleSort,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final stockActive = provider.filterInStock == true;
+    final favActive = provider.filterFavorites;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: SteapLeafSpacing.md),
+      child: Row(
+        children: [
+          TextButton.icon(
+            onPressed: onCycleSort,
+            icon: const Icon(Icons.arrow_downward, size: 11),
+            label: Text(sortLabel),
+            style: TextButton.styleFrom(
+              foregroundColor: colorScheme.onSurfaceVariant,
+              textStyle: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+          const Spacer(),
+          _TypeFilterDropdown(provider: provider),
+          const SizedBox(width: SteapLeafSpacing.tiny),
+          FilterChip(
+            label: const Text('♥ Favoriten'),
+            selected: favActive,
+            showCheckmark: false,
+            onSelected: (_) => provider.setFilterFavorites(!favActive),
+          ),
+          const SizedBox(width: SteapLeafSpacing.tiny),
+          FilterChip(
+            label: const Text('Im Besitz'),
+            selected: stockActive,
+            showCheckmark: false,
+            onSelected: (_) =>
+                provider.setFilterInStock(stockActive ? null : true),
+          ),
+        ],
+      ),
+    );
+  }
+}
   
+class _TypeFilterDropdown extends StatelessWidget {
+  final TeaProvider provider;
+  const _TypeFilterDropdown({required this.provider});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme   = Theme.of(context).textTheme;
+    final selected    = provider.filterType;
+    final isActive    = selected != null;
+
+    final availableTypes = TeaType.values
+        .where((t) => provider.teas.any((tea) => tea.type == t))
+        .toList();
+
+    return PopupMenuButton<TeaType?>(
+      initialValue: selected,
+      onSelected: (type) => provider.setFilterType(
+        provider.filterType == type ? null : type,
+      ),
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          value: null,
+          onTap: () => provider.setFilterType(null),
+          child: Text(
+            'Alle Sorten',
+            style: textTheme.bodySmall?.copyWith(
+              color: selected == null
+                  ? colorScheme.primary
+                  : colorScheme.onSurface,
+            ),
+          ),
+        ),
+        ...availableTypes.map((t) => PopupMenuItem(
+              value: t,
+              child: Text(
+                t.label,
+                style: textTheme.bodySmall?.copyWith(
+                  color: selected == t ? t.color : colorScheme.onSurface,
+                ),
+              ),
+            )),
+      ],
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: isActive
+              ? selected.color.withValues(alpha: 0.15)
+              : colorScheme.surfaceContainerHigh,
+          border: Border.all(
+            color: isActive ? selected.color : colorScheme.outlineVariant,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              isActive ? selected.label : 'Sorte',
+              style: textTheme.labelMedium?.copyWith(
+                color: isActive ? selected.color : colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(width: 2),
+            Icon(
+              Icons.arrow_drop_down,
+              size: 16,
+              color: isActive ? selected.color : colorScheme.onSurfaceVariant,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _AppBarStat extends StatelessWidget {
   final IconData icon;
   final Color? iconColor;
