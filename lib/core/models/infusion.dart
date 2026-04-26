@@ -15,7 +15,7 @@ class Infusion {
   final DateTime? end;
   final int rating; // 0 = nicht bewertet, 1..5
   final String notes;
-  final FlavorProfile flavorProfile;
+  final FlavorProfile tastingProfile;
 
   const Infusion({
     required this.id,
@@ -27,7 +27,7 @@ class Infusion {
     this.end,
     this.rating = 0,
     this.notes = '',
-    this.flavorProfile = FlavorProfile.empty,
+    this.tastingProfile = FlavorProfile.empty,
   });
 
   Infusion copyWith({
@@ -41,7 +41,7 @@ class Infusion {
     bool clearEnd = false,
     int? rating,
     String? notes,
-    FlavorProfile? flavorProfile,
+    FlavorProfile? tastingProfile,
   }) {
     return Infusion(
       id: id ?? this.id,
@@ -53,7 +53,7 @@ class Infusion {
       end: clearEnd ? null : (end ?? this.end),
       rating: rating ?? this.rating,
       notes: notes ?? this.notes,
-      flavorProfile: flavorProfile ?? this.flavorProfile,
+      tastingProfile: tastingProfile ?? this.tastingProfile,
     );
   }
 
@@ -67,7 +67,7 @@ class Infusion {
         'end_time': end?.toIso8601String(),
         'rating': rating,
         'notes': notes,
-        'flavor_profile': jsonEncode(flavorProfile.toJson()),
+        'flavor_profile': jsonEncode(tastingProfile.toJson()),
       };
 
   factory Infusion.fromMap(Map<String, dynamic> m) {
@@ -87,7 +87,7 @@ class Infusion {
           : null,
       rating: (m['rating'] as int?) ?? 0,
       notes: (m['notes'] as String?) ?? '',
-      flavorProfile: _decodeFlavor(m['flavor_profile'] as String?),
+      tastingProfile: _decodeFlavor(m['flavor_profile'] as String?),
     );
   }
 

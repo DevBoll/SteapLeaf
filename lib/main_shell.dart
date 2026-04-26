@@ -5,6 +5,7 @@ import 'core/providers/settings_provider.dart';
 import 'core/providers/tag_provider.dart';
 import 'core/providers/tea_provider.dart';
 import 'screens/collection/collection_screen.dart';
+import 'screens/collection/tea_edit_screen.dart';
 import 'theme/steapleaf_theme.dart';
 
 
@@ -158,9 +159,9 @@ class _ShellFab extends StatelessWidget {
     return FloatingActionButton(
       tooltip: config.tooltip,
       onPressed: () {
-        if (tabIndex == 1) {
+   if (tabIndex == 1) {
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => const _TabPlaceholder(SteapLeafKanji.tea),
+            builder: (_) => const TeaEditScreen(),
           ));
         }
       },

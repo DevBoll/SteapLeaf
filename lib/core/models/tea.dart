@@ -22,7 +22,7 @@ class Tea {
   final String? labelPhotoPath;
   final String notes;
   final int rating; // 0 = nicht bewertet, 1..5
-  final FlavorProfile flavorProfile;
+  final FlavorProfile tastingProfile;
   final List<TeaTag> tags;
   final List<BrewingVariant> brewingVariants;
   final DateTime createdAt;
@@ -41,7 +41,7 @@ class Tea {
     this.labelPhotoPath,
     this.notes = '',
     this.rating = 0,
-    this.flavorProfile = FlavorProfile.empty,
+    this.tastingProfile = FlavorProfile.empty,
     this.tags = const [],
     this.brewingVariants = const [],
     required this.createdAt,
@@ -63,7 +63,7 @@ class Tea {
     bool clearLabelPhoto = false,
     String? notes,
     int? rating,
-    FlavorProfile? flavorProfile,
+    FlavorProfile? tastingProfile,
     List<TeaTag>? tags,
     List<BrewingVariant>? brewingVariants,
     DateTime? createdAt,
@@ -84,7 +84,7 @@ class Tea {
           clearLabelPhoto ? null : (labelPhotoPath ?? this.labelPhotoPath),
       notes: notes ?? this.notes,
       rating: rating ?? this.rating,
-      flavorProfile: flavorProfile ?? this.flavorProfile,
+      tastingProfile: tastingProfile ?? this.tastingProfile,
       tags: tags ?? this.tags,
       brewingVariants: brewingVariants ?? this.brewingVariants,
       createdAt: createdAt ?? this.createdAt,
@@ -108,7 +108,7 @@ class Tea {
         'label_photo_path': labelPhotoPath,
         'notes': notes,
         'rating': rating,
-        'flavor_profile': jsonEncode(flavorProfile.toJson()),
+        'flavor_profile': jsonEncode(tastingProfile.toJson()),
         'created_at': createdAt.toIso8601String(),
         'updated_at': updatedAt.toIso8601String(),
       };
@@ -131,7 +131,7 @@ class Tea {
       labelPhotoPath: m['label_photo_path'] as String?,
       notes: (m['notes'] as String?) ?? '',
       rating: (m['rating'] as int?) ?? 0,
-      flavorProfile: _decodeFlavor(m['flavor_profile'] as String?),
+      tastingProfile: _decodeFlavor(m['flavor_profile'] as String?),
       tags: tags,
       brewingVariants: brewingVariants,
       createdAt: DateTime.parse(m['created_at'] as String),

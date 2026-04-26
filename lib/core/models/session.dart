@@ -31,7 +31,7 @@ class Session {
   final List<Infusion> infusions;
   final int rating;                        // 0 = nicht bewertet, 1..5
   final String notes;
-  final FlavorProfile flavorProfile;
+  final FlavorProfile tastingProfile;
   final bool isManual;
   final DateTime start;
   final DateTime? end;
@@ -49,7 +49,7 @@ class Session {
     this.infusions = const [],
     this.rating = 0,
     this.notes = '',
-    this.flavorProfile = FlavorProfile.empty,
+    this.tastingProfile = FlavorProfile.empty,
     this.isManual = false,
     required this.start,
     this.end,
@@ -71,7 +71,7 @@ class Session {
     List<Infusion>? infusions,
     int? rating,
     String? notes,
-    FlavorProfile? flavorProfile,
+    FlavorProfile? tastingProfile,
     bool? isManual,
     DateTime? start,
     DateTime? end,
@@ -93,7 +93,7 @@ class Session {
       infusions: infusions ?? this.infusions,
       rating: rating ?? this.rating,
       notes: notes ?? this.notes,
-      flavorProfile: flavorProfile ?? this.flavorProfile,
+      tastingProfile: tastingProfile ?? this.tastingProfile,
       isManual: isManual ?? this.isManual,
       start: start ?? this.start,
       end: clearEnd ? null : (end ?? this.end),
@@ -113,7 +113,7 @@ class Session {
         'brewing_parameters': jsonEncode(brewingParameters.toJson()),
         'rating': rating,
         'notes': notes,
-        'flavor_profile': jsonEncode(flavorProfile.toJson()),
+        'flavor_profile': jsonEncode(tastingProfile.toJson()),
         'is_manual': isManual ? 1 : 0,
         'start_time': start.toIso8601String(),
         'end_time': end?.toIso8601String(),
@@ -158,7 +158,7 @@ class Session {
       infusions: infusions,
       rating: (m['rating'] as int?) ?? 0,
       notes: (m['notes'] as String?) ?? '',
-      flavorProfile: _decodeFlavor(m['flavor_profile'] as String?),
+      tastingProfile: _decodeFlavor(m['flavor_profile'] as String?),
       isManual: (m['is_manual'] as int? ?? 0) == 1,
       start: DateTime.parse(m['start_time'] as String),
       end: m['end_time'] != null

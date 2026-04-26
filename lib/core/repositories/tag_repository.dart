@@ -20,7 +20,7 @@ class TagRepository {
     Uuid? uuid,
   }) : _uuid = uuid ?? const Uuid();
 
-  // ---------- TeaTag ----------
+  // TeaTag
 
   Future<List<TeaTag>> getAllTeaTags() => _teaTagDao.getAll();
   Future<TeaTag?> getTeaTag(String id) => _teaTagDao.getById(id);
@@ -34,7 +34,7 @@ class TagRepository {
   Future<void> updateTeaTag(TeaTag tag) => _teaTagDao.update(tag);
   Future<void> deleteTeaTag(String id) => _teaTagDao.delete(id);
 
-  // ---------- AromaTag ----------
+  // AromaTag
 
   Future<List<AromaTag>> getAllAromaTags() => _aromaTagDao.getAll();
   Future<List<AromaTag>> getAromaTagsByCategory(AromaCategory c) =>
@@ -51,7 +51,7 @@ class TagRepository {
   Future<void> updateAromaTag(AromaTag tag) => _aromaTagDao.update(tag);
   Future<void> deleteAromaTag(String id) => _aromaTagDao.delete(id);
 
-  // ---------- TextureTag ----------
+  // TextureTag
 
   Future<List<TextureTag>> getAllTextureTags() => _textureTagDao.getAll();
   Future<TextureTag?> getTextureTag(String id) => _textureTagDao.getById(id);
