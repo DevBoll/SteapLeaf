@@ -6,8 +6,6 @@ import '../tokens/tea_type_tokens.dart';
 class SteapLeafThemeExtension extends ThemeExtension<SteapLeafThemeExtension> {
   const SteapLeafThemeExtension({
     // Brand Colors
-    required this.brandLine,
-    required this.kanjiDecorative,
     required this.starFilled,
     required this.starEmpty,
     required this.favorite,
@@ -41,14 +39,6 @@ class SteapLeafThemeExtension extends ThemeExtension<SteapLeafThemeExtension> {
   });
 
   // Brand Colors
-
-  /// Farbe der Handwriting-Underline unter Screen-Titeln.
-  /// Nur für Top-Level Screen-Titel (Home, Sammlung, Journal, Tee-Detail).
-  final Color brandLine;
-
-  /// Farbe des großen dekorativen Kanji im Header (茶).
-  final Color kanjiDecorative;
-
   /// Farbe ausgefüllter Bewertungssterne.
   final Color starFilled;
 
@@ -135,8 +125,6 @@ class SteapLeafThemeExtension extends ThemeExtension<SteapLeafThemeExtension> {
     TeaTypeColors? teaTypeYellow,
   }) {
     return SteapLeafThemeExtension(
-      brandLine:                    brandLine                    ?? this.brandLine,
-      kanjiDecorative:              kanjiDecorative              ?? this.kanjiDecorative,
       starFilled:                   starFilled                   ?? this.starFilled,
       starEmpty:                    starEmpty                    ?? this.starEmpty,
       favorite:                     favorite                     ?? this.favorite,
@@ -166,8 +154,6 @@ class SteapLeafThemeExtension extends ThemeExtension<SteapLeafThemeExtension> {
   SteapLeafThemeExtension lerp(SteapLeafThemeExtension? other, double t) {
     if (other == null) return this;
     return SteapLeafThemeExtension(
-      brandLine:                   Color.lerp(brandLine,                   other.brandLine,                   t)!,
-      kanjiDecorative:             Color.lerp(kanjiDecorative,             other.kanjiDecorative,             t)!,
       starFilled:                  Color.lerp(starFilled,                  other.starFilled,                  t)!,
       starEmpty:                   Color.lerp(starEmpty,                   other.starEmpty,                   t)!,
       favorite:                    Color.lerp(favorite,                    other.favorite,                    t)!,
