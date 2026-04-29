@@ -1,20 +1,23 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:steapleaf/data/database_helper.dart';
+import 'app.dart';
 
-void main() {
-  runApp(const MainApp());
-}
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+/// Startet die SteapLeaf-App.
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('de', null);
 
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
-    );
+  if (!kIsWeb &&
+      defaultTargetPlatform != TargetPlatform.android &&
+      defaultTargetPlatform != TargetPlatform.iOS) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
   }
+
+  final dbHelper = await DatabaseHelper.instance;
+  runApp(SteapLeafApp(dbHelper: dbHelper));
 }
