@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:steapleaf/Theme/tokens/spacing.dart';
+import '../tokens/text_theme.dart';
 
 /// Fixe Aktionsleiste am unteren Bildschirmrand.
 class ActionBar extends StatelessWidget {
@@ -11,7 +13,7 @@ class ActionBar extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+      padding: SteapLeafSpacing.allLg,
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(color: colorScheme.outlineVariant, width: 0.5),
@@ -22,7 +24,7 @@ class ActionBar extends StatelessWidget {
         child: Row(
           children: [
             for (int i = 0; i < children.length; i++) ...[
-              if (i > 0) const SizedBox(width: 12),
+              if (i > 0) const SizedBox(width: SteapLeafSpacing.md),
               Expanded(child: children[i]),
             ],
           ],
@@ -75,11 +77,9 @@ class ActionBarButton extends StatelessWidget {
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         side: BorderSide(color: borderColor, width: 0.5),
-        foregroundColor: foregroundColor,
-        shape: const RoundedRectangleBorder(),
-        padding: const EdgeInsets.symmetric(vertical: 14),
-      ),
-      child: Text(label, style: const TextStyle(fontSize: 13)),
+        foregroundColor: foregroundColor
+        ),
+      child: Text(label, style: SteapLeafTextTheme.labelLarge),
     );
   }
 }

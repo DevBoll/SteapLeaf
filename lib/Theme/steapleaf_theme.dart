@@ -24,3 +24,4 @@ export 'tokens/kanji_tokens.dart';
 export 'widgets/washi_card.dart';
 export 'widgets/action_bar.dart';
 export 'widgets/dashed_divider.dart';
+export 'widgets/kanji_icon.dart';
