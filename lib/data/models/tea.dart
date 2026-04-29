@@ -1,11 +1,12 @@
 import 'brewing.dart';
+import 'enums.dart';
 import 'flavor_profile.dart';
 import 'tag.dart';
 
 class Tea {
   final int? id;
   final String name;
-  final String? type;
+  final TeaType? type;
   final String? origin;
   final String? harvest;
   final String? vendor;
@@ -40,7 +41,7 @@ class Tea {
   Map<String, Object?> toMap() => {
         if (id != null) 'id': id,
         'name': name,
-        'type': type,
+        'type': type?.dbValue,
         'origin': origin,
         'harvest': harvest,
         'vendor': vendor,
@@ -56,7 +57,7 @@ class Tea {
   factory Tea.fromMap(Map<String, Object?> map) => Tea(
         id: map['id'] as int?,
         name: map['name'] as String,
-        type: map['type'] as String?,
+        type: map['type'] == null ? null : TeaType.fromDb(map['type'] as String),
         origin: map['origin'] as String?,
         harvest: map['harvest'] as String?,
         vendor: map['vendor'] as String?,
@@ -74,7 +75,7 @@ class Tea {
   Tea copyWith({
     int? id,
     String? name,
-    String? type,
+    TeaType? type,
     String? origin,
     String? harvest,
     String? vendor,

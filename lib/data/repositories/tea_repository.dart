@@ -6,6 +6,7 @@ import '../dao/tag_dao.dart';
 import '../dao/tea_dao.dart';
 import '../database_helper.dart';
 import '../models/brewing.dart';
+import '../models/enums.dart';
 import '../models/flavor_profile.dart';
 import '../models/tag.dart';
 import '../models/tea.dart';
@@ -38,7 +39,7 @@ class TeaRepository {
   Future<List<Tea>> getAll({
     bool? ownedOnly,
     bool? favoritesOnly,
-    String? type,
+    TeaType? type,
     String? search,
   }) async {
     final db = await _helper.database;

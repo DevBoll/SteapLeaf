@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../data/models/brewing.dart';
+import '../data/models/enums.dart';
 import '../data/models/flavor_profile.dart';
 import '../data/models/tea.dart';
 import '../data/repositories/tea_repository.dart';
@@ -18,7 +19,7 @@ class TeaProvider extends ChangeNotifier {
 
   bool _ownedOnly = false;
   bool _favoritesOnly = false;
-  String? _typeFilter;
+  TeaType? _typeFilter;
   String _searchQuery = '';
 
   List<Tea> get teas => List.unmodifiable(_teas);
@@ -28,7 +29,7 @@ class TeaProvider extends ChangeNotifier {
 
   bool get ownedOnly => _ownedOnly;
   bool get favoritesOnly => _favoritesOnly;
-  String? get typeFilter => _typeFilter;
+  TeaType? get typeFilter => _typeFilter;
   String get searchQuery => _searchQuery;
 
   Future<void> loadAll() async {
@@ -81,7 +82,7 @@ class TeaProvider extends ChangeNotifier {
     await loadAll();
   }
 
-  Future<void> setTypeFilter(String? type) async {
+  Future<void> setTypeFilter(TeaType? type) async {
     if (_typeFilter == type) return;
     _typeFilter = type;
     await loadAll();

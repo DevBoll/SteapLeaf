@@ -83,7 +83,7 @@ class _MainShellState extends State<MainShell> {
 typedef _TabDef = ({KanjiDefinition kanji, String label});
 
 const List<_TabDef> _tabDefs = [
-  (kanji: SteapLeafKanji.home, label: 'Heim'),
+  (kanji: SteapLeafKanji.home, label: 'Home'),
   (kanji: SteapLeafKanji.collection, label: 'Sammlung'),
   (kanji: SteapLeafKanji.journal, label: 'Journal'),
 ];

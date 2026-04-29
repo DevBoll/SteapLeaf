@@ -1,6 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 
 import '../database_helper.dart';
+import '../models/enums.dart';
 import '../models/tea.dart';
 
 class TeaDao {
@@ -30,7 +31,7 @@ class TeaDao {
     DatabaseExecutor db, {
     bool? ownedOnly,
     bool? favoritesOnly,
-    String? type,
+    TeaType? type,
     String? search,
     String orderBy = 'name COLLATE NOCASE ASC',
   }) async {
@@ -41,7 +42,7 @@ class TeaDao {
     if (favoritesOnly == true) whereParts.add('isFavorite = 1');
     if (type != null) {
       whereParts.add('type = ?');
-      whereArgs.add(type);
+      whereArgs.add(type.dbValue);
     }
     if (search != null && search.isNotEmpty) {
       whereParts.add('(name LIKE ? OR vendor LIKE ?)');
